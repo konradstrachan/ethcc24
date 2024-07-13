@@ -6,9 +6,10 @@ import "./JustTheEnforcement.sol";
 contract JustTheExample is JustTheEnforcement {
 
     event Executed (uint256 order);
+    event Paid (uint256 amount);
 
     modifier correctlyOrdered {
-        require(verifyOrderingRight());
+        require(verifyOrderingRight(), "ordering mmismatch");
         _;
     }
 
@@ -17,8 +18,18 @@ contract JustTheExample is JustTheEnforcement {
         emit Executed(executionCounter[block.number]);
     }
 
-    function testPriorityLogic(uint256 feeAmount, bytes memory sig) public {
-        require(claimPriorityOrdering(address(this), block.chainid, block.number, msg.sender, feeAmount, sig));
+    function testPriorityLogic(uint256 feeAmount, bytes memory sig) public payable {
+        require(
+            claimPriorityOrdering(address(this), block.chainid, block.number, msg.sender, feeAmount, sig),
+            "failed to set ordering");
         testLogic();
+    }
+
+    receive() external payable  { 
+        emit Paid(msg.value);
+    }
+
+    fallback() external payable {
+        emit Paid(msg.value);
     }
 }

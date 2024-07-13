@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 contract JustTheEnforcement {
     // Address expected to be the signer
-    address public constant expectedSigner = 0xC19642f7f878d781865e6d45047A444708c24dF4;
+    address public constant expectedSigner = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
 
     struct PreConf {
         address contractAddress;
