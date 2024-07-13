@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract jtt {
+contract JustTheEnforcement {
     // Address expected to be the signer
     address public constant expectedSigner = 0x7b6aceC5eA36DD5ef5b0639B8C1d0Dab59DdcF03;
 
