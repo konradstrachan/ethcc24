@@ -17,6 +17,7 @@ contract jtt {
     mapping(uint256 => uint256) public executionCounter;
 
     event Signer (bytes32 dig, address signer);
+    event Executed (uint256 order);
 
     function getOrderingHint(uint256 blockNumber) public view returns (bool) {
         // For block builders to anticipate ordering collisions when true
@@ -61,9 +62,9 @@ contract jtt {
         uint256 feeAmount,
         bytes memory sig) public payable returns (bool) {
 
-        //require(contractAddress == address(this), "Invalid contract");
-        //require(blockNumber == block.number, "Invalid block");
-        //require(msg.sender == entity, "Invalid entity");
+        require(contractAddress == address(this), "Invalid contract");
+        require(blockNumber == block.number, "Invalid block");
+        require(msg.sender == entity, "Invalid entity");
 
         bytes32 bidDigest = createPCDigest(
             contractAddress,
@@ -74,12 +75,10 @@ contract jtt {
 
         address signer = recoverSigner(bidDigest, sig);
 
-        emit Signer(bidDigest, signer);
-
-        //require(signer == expectedSigner, "Attestor address mismatch");
+        require(signer == expectedSigner, "Attestor address mismatch");
 
         // Check if the sent amount of ETH is at least the fee amount
-        /*require(msg.value >= feeAmount, "Insufficient fee amount");
+        require(msg.value >= feeAmount, "Insufficient fee amount");
 
         // Split the received ETH
         uint256 halfFee = msg.value / 2;
@@ -87,7 +86,7 @@ contract jtt {
         payable(block.coinbase).transfer(msg.value - halfFee);
 
         // If ok, then set ordering priority
-        priority[blockNumber] = entity;*/
+        priority[blockNumber] = entity;
         return true;
     }
 
@@ -121,6 +120,8 @@ contract jtt {
 
     function testLogic() public {
         require(verifyOrderingRight());
+        // Show what index this (this will now have been incremented)
+        emit Executed(executionCounter[block.number]);
     }
 
     function testPriorityLogic(uint256 feeAmount, bytes memory sig) public {
@@ -133,6 +134,15 @@ contract jtt {
         address entity,
         uint256 feeAmount,
         bytes memory sig) public {
-        claimPriorityOrdering(contractAddress, chainId, blockNumber, entity, feeAmount, sig);
+
+        bytes32 bidDigest = createPCDigest(
+            contractAddress,
+            chainId,
+            blockNumber,
+            entity,
+            feeAmount);
+
+        address signer = recoverSigner(bidDigest, sig);
+        emit Signer(bidDigest, signer);
     }
 }
