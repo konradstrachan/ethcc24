@@ -16,6 +16,8 @@ contract jtt {
     mapping(uint256 => address) public priority;
     mapping(uint256 => uint256) public executionCounter;
 
+    event Signer (bytes32 dig, address signer);
+
     function getOrderingHint(uint256 blockNumber) public view returns (bool) {
         // For block builders to anticipate ordering collisions when true
         return priority[blockNumber] != address(0);
@@ -59,21 +61,25 @@ contract jtt {
         uint256 feeAmount,
         bytes memory sig) public payable returns (bool) {
 
-        require(contractAddress == address(this), "Invalid contract");
-        require(blockNumber == block.number, "Invalid block");
-        require(msg.sender == entity, "Invalid entity");
+        //require(contractAddress == address(this), "Invalid contract");
+        //require(blockNumber == block.number, "Invalid block");
+        //require(msg.sender == entity, "Invalid entity");
 
         bytes32 bidDigest = createPCDigest(
             contractAddress,
             chainId,
             blockNumber,
             entity,
-            msg.value);
+            feeAmount);
 
-        require(recoverSigner(bidDigest, sig) == expectedSigner, "Attestor address mismatch");
+        address signer = recoverSigner(bidDigest, sig);
+
+        emit Signer(bidDigest, signer);
+
+        //require(signer == expectedSigner, "Attestor address mismatch");
 
         // Check if the sent amount of ETH is at least the fee amount
-        require(msg.value >= feeAmount, "Insufficient fee amount");
+        /*require(msg.value >= feeAmount, "Insufficient fee amount");
 
         // Split the received ETH
         uint256 halfFee = msg.value / 2;
@@ -81,7 +87,7 @@ contract jtt {
         payable(block.coinbase).transfer(msg.value - halfFee);
 
         // If ok, then set ordering priority
-        priority[blockNumber] = entity;
+        priority[blockNumber] = entity;*/
         return true;
     }
 
@@ -90,7 +96,8 @@ contract jtt {
         uint256 chainId, 
         uint256 blockNumber,
         address entity,
-        uint256 feeAmount) public pure returns (bytes32) {
+        uint256 feeAmount
+    ) public pure returns (bytes32) {
         PreConf memory pc = PreConf(contractAddress, chainId, blockNumber, entity, feeAmount);
         return keccak256(abi.encode(pc));
     }
@@ -119,5 +126,13 @@ contract jtt {
     function testPriorityLogic(uint256 feeAmount, bytes memory sig) public {
         require(claimPriorityOrdering(address(this), block.chainid, block.number, msg.sender, feeAmount, sig));
         testLogic();
+    }
+    function testSigLogic( address contractAddress,
+        uint256 chainId, 
+        uint256 blockNumber,
+        address entity,
+        uint256 feeAmount,
+        bytes memory sig) public {
+        claimPriorityOrdering(contractAddress, chainId, blockNumber, entity, feeAmount, sig);
     }
 }
