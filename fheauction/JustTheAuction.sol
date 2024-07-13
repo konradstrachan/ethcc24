@@ -19,13 +19,13 @@ contract JustTheAuction {
 
     mapping(bytes32 => Auction) internal auctions;
 
-    uint256 public auctionLength;
+    uint256 public auctionLengthSeconds;
 
     event AuctionEnded(address winner, uint32 bid, bytes sig);
 
     constructor() {
         // TODO make configurable and better explained
-        auctionLength = 2;
+        auctionLengthSeconds = 6;
     }
 
     function getAuctionKey(uint256 chainId, uint256 blockNum) public pure returns (bytes32) {
@@ -50,7 +50,7 @@ contract JustTheAuction {
 
         // else
 
-        require(block.timestamp <= auction.startTime + auctionLength, "Auction ended");
+        require(block.timestamp <= auction.startTime + auctionLengthSeconds, "Auction ended");
 
         euint32 updated_value = amount;
 
@@ -76,6 +76,7 @@ contract JustTheAuction {
     function fheDecryptAndSign() public pure returns (bytes memory) {
         // Simulate threshold network functionality
         // Mocked signature generated with params:
+        // Signed by 0xC19642f7f878d781865e6d45047A444708c24dF4
         // contract_address = '0x7b6aceC5eA36DD5ef5b0639B8C1d0Dab59DdcF03'
         // chain_id = 100
         // block_number = 100
@@ -89,7 +90,7 @@ contract JustTheAuction {
         Auction memory auction = auctions[auctionKey];
 
         require(auction.startTime > 0, "Invalid auction");
-        require(block.timestamp > auction.startTime + auctionLength, "Auction ended");
+        require(block.timestamp > auction.startTime + auctionLengthSeconds, "Auction ended");
 
         // mock emitted signature
         bytes memory signature = fheDecryptAndSign();

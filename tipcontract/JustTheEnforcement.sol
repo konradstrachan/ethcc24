@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 contract JustTheEnforcement {
     // Address expected to be the signer
-    address public constant expectedSigner = 0x7b6aceC5eA36DD5ef5b0639B8C1d0Dab59DdcF03;
+    address public constant expectedSigner = 0xC19642f7f878d781865e6d45047A444708c24dF4;
 
     struct PreConf {
         address contractAddress;
@@ -17,11 +17,12 @@ contract JustTheEnforcement {
     mapping(uint256 => uint256) public executionCounter;
 
     event Signer (bytes32 dig, address signer);
-    event Executed (uint256 order);
 
-    function getOrderingHint(uint256 blockNumber) public view returns (bool) {
-        // For block builders to anticipate ordering collisions when true
-        return priority[blockNumber] != address(0);
+    function getOrderingHint(uint256 blockNumber) public view returns (address) {
+        // For block builders to anticipate ordering collisions
+        // When this returns other than address(0) this should be taken as a
+        // ordering hint for calls to this contract address
+        return priority[blockNumber];
     }
 
     function verifyOrderingRight() public returns (bool) {
@@ -118,16 +119,7 @@ contract JustTheEnforcement {
         }
     }
 
-    function testLogic() public {
-        require(verifyOrderingRight());
-        // Show what index this (this will now have been incremented)
-        emit Executed(executionCounter[block.number]);
-    }
-
-    function testPriorityLogic(uint256 feeAmount, bytes memory sig) public {
-        require(claimPriorityOrdering(address(this), block.chainid, block.number, msg.sender, feeAmount, sig));
-        testLogic();
-    }
+    // Debugging function for testing signature decoding
     function testSigLogic( address contractAddress,
         uint256 chainId, 
         uint256 blockNumber,
