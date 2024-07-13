@@ -16,6 +16,11 @@ contract jtt {
     mapping(uint256 => address) public priority;
     mapping(uint256 => uint256) public executionCounter;
 
+    function getOrderingHint(uint256 blockNumber) public view returns (bool) {
+        // For block builders to anticipate ordering collisions when true
+        return priority[blockNumber] != address(0);
+    }
+
     function verifyOrderingRight() public returns (bool) {
         address blockPriorityOwner = priority[block.number];
 
@@ -27,7 +32,6 @@ contract jtt {
         }
 
         // Someone has priority in this block
-
         uint256 execCounterCurrent = executionCounter[block.number];
 
         // Someone has priority, check it is this caller for the first slot
