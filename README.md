@@ -146,3 +146,11 @@ Fhenix
 Sepolia
 
 * https://sepolia.etherscan.io/address/0x354a50252bde407efccfe4fa605498e5db68aef6
+
+Zircuit
+
+* https://explorer.zircuit.com/address/0x4DC36FCc192c042fC49Fe934D86E8942D79c4e93
+
+Rootstock
+
+* https://explorer.testnet.rootstock.io/address/0x35461b3ba63aa1764b46778570d8e369ea3cff86
