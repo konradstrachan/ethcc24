@@ -1,6 +1,8 @@
 # JustTheTip 
 
-An application layer preconfirmations framework built during ETH Global Brussels 2024 hackathon.
+An application layer preconfirmations framework relying on Block builder tips to land transactions at the tip of the block.
+
+Built during ETH Global Brussels 2024 hackathon.
 
 ![image](https://github.com/user-attachments/assets/6697d8ba-1cde-46ab-b249-851c577a656b)
 
@@ -8,7 +10,7 @@ An application layer preconfirmations framework built during ETH Global Brussels
 
 ### tl;dr what is this?
 
-Smart contract that provides soft block space inclusion and execution guarantees through incentive distribution using fully homomorphic encryption shielded auctions to allow fair blind auctions.
+Smart contracts that provides soft block space inclusion and execution guarantees through incentive distribution using fully homomorphic encryption shielded auctions to allow fair blind auctions.
 
 ### Problem description
 
