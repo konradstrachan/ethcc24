@@ -2,6 +2,8 @@
 
 An application layer preconfirmations framework built during ETH Global Brussels 2024 hackathon.
 
+![image](https://github.com/user-attachments/assets/6697d8ba-1cde-46ab-b249-851c577a656b)
+
 ## Introduction
 
 ### tl;dr what is this?
@@ -27,6 +29,8 @@ Ideally this logic should reside lower within the stack at a sequencing / block 
 The Fhenix auction does not check the bidder of the preconf has the funds to actually execute the preconfirmation on chain leading to malicious actors being able to deny preconf service to others by providing absurdly high bids. There are a few mechanisms to prevent against this, but this was not the primary focus of this project.
 
 ## Mechanism
+
+![image](https://github.com/user-attachments/assets/4b6e7405-c03d-4997-aea4-46590eb531bf)
 
 JTT has two main components:
 
@@ -127,10 +131,11 @@ The fee collected is split, with half going to the contract and half to the mine
 
 A minimum viable implementation of the logic is shown within the JustTheExample contract. Any contract and any logic can be wrapped by preconf guarantees based on the inclusion of verifyOrderingRight checks.
 
-
 ## Testing
 
 Since proving functionality requires control over block times and creation, for simplicity the project was fully tested on a local hardhat environment using the script found in tools. The contracts have also been deployed and tested on Fhenix and other chains.
+
+![image](https://github.com/user-attachments/assets/b66d12a1-7816-4a00-a8c5-02dd08178a09)
 
 ## Deployed contracts
 
