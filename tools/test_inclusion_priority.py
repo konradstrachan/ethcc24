@@ -86,7 +86,7 @@ contract = web3.eth.contract(address=contract_address_example_contract, abi=cont
 
 ### test functions below ###
 print("########################################")
-print("Set up of environment..")
+print("🗃️  Set up of environment..")
 
 send_custom_rpc('evm_setAutomine', [False])
 print("Auto-mining turned off (no new blocks produced)")
@@ -96,35 +96,35 @@ print("Interval mining disabled")
 print("")
 
 print("########################################")
-print("Test 1: inclusion without preconf based ordering")
+print("🏷️  Test 1: inclusion without preconf based ordering")
 
-print("Sending Tx1..")
+print("📤 Sending Tx1..")
 tx_hash1 = contract.functions.testLogic().transact({
     'from': web3.eth.accounts[0]
 })
 
-print("Sending Tx2..")
+print("📤 Sending Tx2..")
 tx_hash2 = contract.functions.testLogic().transact({
     'from': web3.eth.accounts[0]
 })
 
 send_custom_rpc('evm_mine', [])
-print("Block mined manually.")
+print("🧾 Block mined")
 
 # Get the receipt to see the logs
-print("Tx1 logs:")
+print("📩 Tx1 logs:")
 get_and_print_logs(tx_hash1)
-print("Tx2 logs:")
+print("📩 Tx2 logs:")
 get_and_print_logs(tx_hash2)
 
 print("")
 print("########################################")
-print("Test 2: inclusion WITH preconf based ordering")
+print("🏷️  Test 2: inclusion WITH preconf based ordering")
 
-print("Getting latest block number..")
+print("⚙️ Getting latest block number..")
 block_number = get_latest_block_number()
 print(f"Latest block number is [{block_number}]")
-print("Simulating execution of Fhenix auction")
+print("🏗️ Simulating execution of Fhenix auction")
 print("Started auction..")
 print(".. auction ended")
 
@@ -137,10 +137,12 @@ executing_entity = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
 fee_amount = 100
 digest, signature = generate_digest_and_signature(contract_address, chain_id, block_number, executing_entity, fee_amount)
 
-print(f"Digest of winning bid: [{digest.hex()}]")
-print(f"Signed attestation of winning bid: [{signature.hex()}]")
+print(f"🤖 FHE digest of winning bid: [{digest.hex()}]")
+print(f"🤖 FHE signed attestation of winning bid: [{signature.hex()}]")
 
-print("Sending Tx1 (setting preconf expectation)..")
+print("--------------------------------------------")
+
+print("📤 Sending Tx1 (setting preconf expectation)..")
 tx_hash1 = contract.functions.claimPriorityOrdering(
     contract_address,
     chain_id,
@@ -152,7 +154,7 @@ tx_hash1 = contract.functions.claimPriorityOrdering(
     'value': 100
 })
 
-print("Sending Tx2 (tx which is not allowed to be first)..")
+print("📤 Sending Tx2 (tx which is not allowed to be first)..")
 
 try:
     tx_hash2 = contract.functions.testLogic().transact({
@@ -161,25 +163,25 @@ try:
 except Exception as e:
     print(f"Failed with {e}")
 
-print("Sending Tx3 (tx which has the preconf)..")
+print("📤 Sending Tx3 (tx which has the preconf)..")
 tx_hash2 = contract.functions.testLogic().transact({
     'from': web3.eth.accounts[0]
 })
 
-print("Sending Tx4 (resending Tx2)..")
+print("📤 Sending Tx4 (resending Tx2)..")
 tx_hash3 = contract.functions.testLogic().transact({
     'from': web3.eth.accounts[1]
 })
 
 send_custom_rpc('evm_mine', [])
-print("Block mined manually.")
+print("🧾 Block mined")
 
 # Get the receipt to see the logs
-print("Tx1 logs:")
+print("📩 Tx1 logs:")
 get_and_print_logs(tx_hash1)
-print("Tx2 logs:")
+print("📩 Tx2 logs:")
 get_and_print_logs(tx_hash2)
-print("Tx3 logs:")
+print("📩 Tx3 logs:")
 get_and_print_logs(tx_hash3)
 
 print("")
